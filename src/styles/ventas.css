@@ -1,0 +1,187 @@
+/* ----------------------------- */
+/* BLOQUE PRINCIPAL DE VENTAS   */
+/* ----------------------------- */
+
+.ventas {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* TODOS LOS BLOQUES AL MISMO ANCHO */
+.ventas__cliente,
+.ventas__productos,
+.ventas__tabla,
+.ventas__total-simple {
+  max-width: 1200px;   /* 👈 mismo ancho para todos */
+  margin: 0 ;     /* 👈 centrado dentro de la página */
+}
+
+/* ============================= */
+/* 1) FORMULARIO DEL CLIENTE     */
+/* ============================= */
+
+.ventas__cliente {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.ventas__cliente h2 {
+  margin-bottom: 15px;
+}
+
+.ventas__cliente input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+/* ============================= */
+/* 2) SECCIÓN DE PRODUCTOS       */
+/* ============================= */
+
+.ventas__productos {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.ventas__productos h2 {
+  margin-bottom: 15px;
+}
+
+.ventas__productos select,
+.ventas__productos input {
+  padding: 12px;
+  border-radius: 6px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.ventas__productos button {
+  padding: 12px 20px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.ventas__productos button:hover {
+  background: #357acb;
+}
+
+/* ============================= */
+/* 3) TABLA DE DETALLES (ESTILO INVENTARIO) */
+/* ============================= */
+.ventas__tabla{
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+}
+.ventas__tabla-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* el div.ventas__tabla ya tiene max-width por la regla de arriba */
+.ventas__tabla table,
+table.ventas__tabla {
+  width: 100%;              /* 👈 que ocupe todo el ancho del contenedor */
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.ventas__tabla th,
+.ventas__tabla td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.ventas__tabla th {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+
+.ventas__acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.ventas__icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.ventas__icon:hover {
+  opacity: 0.7;
+}
+
+.ventas__icon--delete:hover {
+  filter: brightness(0.5);
+}
+
+/* ============================= */
+/* 4) TOTAL DE LA VENTA          */
+/* ============================= */
+
+/* Ya no usamos el bloque azul grande */
+
+
+/* Total simple debajo de la tabla, mismo ancho */
+.ventas__total-simple {
+  text-align: right;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+  padding-right: 5px;
+}
+
+
+/* ============================= */
+/* 5) BOTÓN ENVIAR FACTURA       */
+/* ============================= */
+
+.ventas__btn-enviar {
+  padding: 12px 28px;
+  background: #4CAF50;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  /* 🔥 Alinearlo a la derecha */
+  display: inline-block;
+  margin-left: auto;
+
+  /* Opcional: sombra */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.ventas__btn-enviar:hover {
+  background: #3e8e41;
+}
+
+
+.ventas-page,
+.ventas {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
