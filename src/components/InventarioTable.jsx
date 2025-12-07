@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function InventarioTable({ productos, onEditar, onEliminar }) {
+export default function InventarioTable({ productos, onEditar, onEliminar, onPedido }) {
   const [filtro, setFiltro] = useState("");
 
   const productosFiltrados = productos.filter((p) => {
@@ -59,7 +59,7 @@ export default function InventarioTable({ productos, onEditar, onEliminar }) {
                 <td className="inventario-table__actions">
                  
                   <button className="btn-pedido" onClick={() => onPedido(p)}>
-                    📦 Pedido
+                    📦
                   </button>
                   <button
                     className="inventario-table__btn inventario-table__btn--edit"
