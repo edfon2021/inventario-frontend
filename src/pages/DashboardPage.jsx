@@ -10,11 +10,22 @@ import "../styles/form-navbar.css";
 export default function DashboardPage() {
   const [data, setData] = useState([]);
 
+  // 🔥 URL del backend
+  const API = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
-    fetch("https://invetariofacturacion-eed5cpf0dybha0gg.canadacentral-01.azurewebsites.net/api/dashboard-subcategorias")
-      .then(res => res.json())
-      .then(json => setData(json))
-      .catch(err => console.error("Error cargando dashboard:", err));
+    if (!API) {
+      console.error("ERROR: VITE_API_URL no está definida");
+      return;
+    }
+
+    fetch(`${API}/api/dashboard-subcategorias`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`Error ${res.status}`);
+        return res.json();
+      })
+      .then((json) => setData(json))
+      .catch((err) => console.error("Error cargando dashboard:", err));
   }, []);
 
   return (

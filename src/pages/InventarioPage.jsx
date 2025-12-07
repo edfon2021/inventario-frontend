@@ -10,77 +10,84 @@ export default function InventarioPage() {
   const [productos, setProductos] = useState([]);
   const [productoEditar, setProductoEditar] = useState(null);
 
-  // Cargar productos desde el backend al iniciar
+  const API = import.meta.env.VITE_API_URL;
+
+  // Cargar productos
   useEffect(() => {
-    fetch("/api/productos")
-      .then(r => r.json())
-      .then(data => setProductos(data));
+    if (!API) {
+      console.error("❌ ERROR: VITE_API_URL no está definida");
+      return;
+    }
+
+    (async () => {
+      try {
+        const r = await fetch(`${API}/api/productos`);
+        if (!r.ok) throw new Error("Error cargando inventario");
+        const data = await r.json();
+        setProductos(data);
+      } catch (err) {
+        console.error("Error:", err);
+      }
+    })();
   }, []);
 
-  // Guardar producto nuevo
   function agregarProducto(nuevo) {
-  fetch("/api/productos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(nuevo)
-  })
-    .then(r => r.json())
-    .then(res => {
-      setProductos(prev => [...prev, { ...nuevo, id: res.id }]);
+    fetch(`${API}/api/productos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevo),
     })
-    .catch(err => console.error("Error agregando:", err));
-}
-  // Abrir modal
+      .then(r => (r.ok ? r.json() : Promise.reject("Error guardando producto")))
+      .then((res) => {
+        setProductos((prev) => [...prev, { ...nuevo, id: res.id }]);
+      })
+      .catch((err) => {
+        console.error("Error agregando:", err);
+        alert("No se pudo guardar el producto.");
+      });
+  }
+
   function abrirEditar(producto) {
     setProductoEditar(producto);
   }
 
-// Guardar los cambios en productos
-function guardarCambios(datos) {
-
-  console.log("DATOS:", datos);
-
-  fetch(`/api/productos/${datos.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos),
-  })
-    .then(r => r.json())
-    .then(() => {
-      setProductos(prev =>
-        prev.map(p =>
-          p.id === datos.id
-            ? { ...p, ...datos }
-            : p
-        )
-      );
-
-      setProductoEditar(null);
+  function guardarCambios(datos) {
+    fetch(`${API}/api/productos/${datos.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
     })
-    .catch(err => console.error("Error actualizando:", err));
-}
+      .then(r => (r.ok ? r.json() : Promise.reject("Error actualizando")))
+      .then(() => {
+        setProductos((prev) =>
+          prev.map((p) => (p.id === datos.id ? { ...p, ...datos } : p))
+        );
+        setProductoEditar(null);
+      })
+      .catch((err) => {
+        console.error("Error actualizando:", err);
+        alert("No se pudo actualizar el producto.");
+      });
+  }
 
-//Eliminar productos
-function eliminarProducto(id) {
-  if (!window.confirm("¿Seguro que deseas eliminar este producto?")) return;
+  function eliminarProducto(id) {
+    if (!window.confirm("¿Seguro que deseas eliminar este producto?")) return;
 
-  fetch(`/api/productos/${id}`, {
-    method: "DELETE",
-  })
-    .then(r => {
-      if (!r.ok) throw new Error("Error en el servidor");
-      return r.json(); // ahora sí, porque ya devolvemos JSON
-    })
-    .then(() => {
-      setProductos(prev => prev.filter(p => p.id !== id));
-    })
-    .catch(err => console.error("Error eliminando:", err));
-}
-// Frontend de la pantalla inventario
+    fetch(`${API}/api/productos/${id}`, { method: "DELETE" })
+      .then(r => (r.ok ? r.json() : Promise.reject("Error eliminando")))
+      .then(() => {
+        setProductos((prev) => prev.filter((p) => p.id !== id));
+      })
+      .catch((err) => {
+        console.error("Error eliminando:", err);
+        alert("No se pudo eliminar el producto.");
+      });
+  }
+
   return (
     <div className="inventario-container">
       <FormNavbar title="Gestión de Inventario" />
-      
+
       <InventarioForm onGuardar={agregarProducto} />
 
       <InventarioTable
