@@ -1,0 +1,22 @@
+.proveedor-modal {
+  width: 420px;
+  padding: 20px;
+}
+
+.proveedor-modal h3 {
+  margin-bottom: 15px;
+}
+
+.proveedor-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.proveedor-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

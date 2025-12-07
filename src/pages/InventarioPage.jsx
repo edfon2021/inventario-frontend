@@ -159,6 +159,14 @@ export default function InventarioPage() {
   }
 }
 
+//Recarga proveedores
+function recargarProveedores() {
+  fetch(`${API}/api/proveedores`)
+    .then(r => r.json())
+    .then(data => setProveedores(data))
+    .catch(err => console.error("Error recargando proveedores:", err));
+}
+
   return (
     <div className="inventario-container">
       <FormNavbar title="Gestión de Inventario" />
@@ -179,10 +187,11 @@ export default function InventarioPage() {
       />
 
       <ModalPedido
-        producto={productoPedido}
-        proveedores={proveedores}
-        onClose={() => setProductoPedido(null)}
-        onSave={guardarPedido}
+          producto={productoPedido}
+          proveedores={proveedores}
+          onClose={() => setProductoPedido(null)}
+          onSave={guardarPedido}
+          onRecargarProveedores={recargarProveedores}   
       />
     </div>
   );

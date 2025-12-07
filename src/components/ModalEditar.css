@@ -155,3 +155,50 @@
   font-style: italic;
   color: #666;
 }
+
+.proveedor-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.proveedor-group__left {
+  flex: 1;
+}
+
+.proveedor-group__add {
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 19px;
+}
+
+.proveedor-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.proveedor-group__left {
+  flex: 1;
+}
+
+.proveedor-group__add {
+  background: #0066ff;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin-bottom: -3px; /* lo alinea PERFECTO con el select */
+}
+
+.proveedor-group__add:hover {
+  background: #0050cc;
+  transform: scale(1.05);
+}
