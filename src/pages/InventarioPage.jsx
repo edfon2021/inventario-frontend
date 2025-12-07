@@ -114,35 +114,50 @@ export default function InventarioPage() {
 
   // NUEVO → Guardar pedido (solo suma al inventario)
   async function guardarPedido(pedido) {
-    try {
-      // CORREGIDO: Se agregaron las backticks (`)
-      const r = await fetch(`${API}/api/pedidos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pedido),
-      });
+  try {
+    // Registrar el pedido
+    const r = await fetch(`${API}/api/pedidos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido),
+    });
 
-      if (!r.ok) throw new Error("Error registrando pedido");
+    if (!r.ok) throw new Error("Error registrando pedido");
 
-      // Actualizar inventario local → sumar cantidad
-      setProductos((prev) =>
-        prev.map((p) =>
-          p.id === pedido.productoId
-            ? {
-                ...p,
-                cantidad: Number(p.cantidad) + Number(pedido.cantidad),
-              }
-            : p
-        )
-      );
+    // Buscar producto actual
+    const productoActual = productos.find(p => p.id === pedido.productoId);
 
-      setProductoPedido(null);
-      alert("Pedido registrado con éxito 🚚📦");
-    } catch (err) {
-      console.error("Error pedido:", err);
-      alert("No se pudo registrar el pedido.");
-    }
+    // Calcular datos nuevos (solo se reemplaza, NO se promedia)
+    const nuevosDatos = {
+      precioCompra: pedido.precioCompra,
+      precioVenta: pedido.precioVenta,
+      cantidad: Number(productoActual.cantidad) + Number(pedido.cantidad),
+    };
+
+    // Actualizar producto en BD
+    const update = await fetch(`${API}/api/productos/${pedido.productoId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(nuevosDatos),
+    });
+
+    // Refrescar inventario en pantalla
+    setProductos(prev =>
+      prev.map(p =>
+        p.id === pedido.productoId
+          ? { ...p, ...nuevosDatos }
+          : p
+      )
+    );
+
+    setProductoPedido(null);
+    alert("Pedido registrado con éxito");
+
+  } catch (err) {
+    console.error("Error pedido:", err);
+    alert("No se pudo registrar el pedido.");
   }
+}
 
   return (
     <div className="inventario-container">

@@ -44,3 +44,18 @@
 .form-navbar__link:hover {
   color: #007bff;
 }
+
+
+.form-navbar__button {
+  font-size: 14px;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  color: #1a237e;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.form-navbar__button:hover {
+  text-decoration: underline;
+}

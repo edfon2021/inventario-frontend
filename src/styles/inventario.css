@@ -108,6 +108,10 @@
   cursor: pointer;
 }
 
+.inventario-table__btn:hover {
+  background: #0056b3;
+}
+
 .inventario-table__btn--edit {
   color: #0077ff;
 }
