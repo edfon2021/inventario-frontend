@@ -29,8 +29,10 @@ export default function ModalProveedor({ visible, onClose, onSaved }) {
     })
       .then((r) => r.json())
       .then(() => {
-        onSaved();    // ← Recargar proveedores en PedidosModal
-        onClose();    // ← Cerrar modal
+         alert("Proveedor guardado exitosamente");
+
+         if (typeof onSaved === "function") onSaved();
+         if (typeof onClose === "function") onClose();
       })
       .catch(err => console.error("Error guardando proveedor:", err));
   }
