@@ -57,6 +57,10 @@ export default function InventarioTable({ productos, onEditar, onEliminar }) {
                 <td className="inventario-table__cell">{p.cantidad}</td>
 
                 <td className="inventario-table__actions">
+                 
+                  <button className="btn-pedido" onClick={() => onPedido(p)}>
+                    📦 Pedido
+                  </button>
                   <button
                     className="inventario-table__btn inventario-table__btn--edit"
                     onClick={() => onEditar(p)}

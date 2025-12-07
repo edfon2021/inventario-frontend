@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import InventarioForm from "../components/InventarioForm";
 import InventarioTable from "../components/InventarioTable";
 import ModalEditar from "../components/ModalEditar";
+import ModalPedido from "../components/ModalPedido";
 import "../styles/inventario.css";
 import FormNavbar from "../components/FormNavbar";
 import "../styles/form-navbar.css";
@@ -9,6 +10,12 @@ import "../styles/form-navbar.css";
 export default function InventarioPage() {
   const [productos, setProductos] = useState([]);
   const [productoEditar, setProductoEditar] = useState(null);
+
+  // Nuevo → para pedidos
+  const [productoPedido, setProductoPedido] = useState(null);
+
+  // Nuevo → proveedores
+  const [proveedores, setProveedores] = useState([]);
 
   const API = import.meta.env.VITE_API_URL;
 
@@ -29,15 +36,27 @@ export default function InventarioPage() {
         console.error("Error:", err);
       }
     })();
-  }, []);
+  }, [API]);
 
+  // NUEVO → Cargar proveedores
+  useEffect(() => {
+    if (!API) return;
+
+    fetch(`${API}/api/proveedores`)
+      .then((r) => r.json())
+      .then((data) => setProveedores(data))
+      .catch((err) => console.error("Error cargando proveedores:", err));
+  }, [API]);
+
+  // Crear producto nuevo
   function agregarProducto(nuevo) {
+    // CORREGIDO: Se agregaron las backticks (`)
     fetch(`${API}/api/productos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevo),
     })
-      .then(r => (r.ok ? r.json() : Promise.reject("Error guardando producto")))
+      .then((r) => (r.ok ? r.json() : Promise.reject("Error guardando producto")))
       .then((res) => {
         setProductos((prev) => [...prev, { ...nuevo, id: res.id }]);
       })
@@ -47,17 +66,20 @@ export default function InventarioPage() {
       });
   }
 
+  // Abrir modal edición
   function abrirEditar(producto) {
     setProductoEditar(producto);
   }
 
+  // Guardar cambios
   function guardarCambios(datos) {
+    // CORREGIDO: Se agregaron las backticks (`)
     fetch(`${API}/api/productos/${datos.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(datos),
     })
-      .then(r => (r.ok ? r.json() : Promise.reject("Error actualizando")))
+      .then((r) => (r.ok ? r.json() : Promise.reject("Error actualizando")))
       .then(() => {
         setProductos((prev) =>
           prev.map((p) => (p.id === datos.id ? { ...p, ...datos } : p))
@@ -70,11 +92,12 @@ export default function InventarioPage() {
       });
   }
 
+  // Eliminar producto
   function eliminarProducto(id) {
     if (!window.confirm("¿Seguro que deseas eliminar este producto?")) return;
 
     fetch(`${API}/api/productos/${id}`, { method: "DELETE" })
-      .then(r => (r.ok ? r.json() : Promise.reject("Error eliminando")))
+      .then((r) => (r.ok ? r.json() : Promise.reject("Error eliminando")))
       .then(() => {
         setProductos((prev) => prev.filter((p) => p.id !== id));
       })
@@ -82,6 +105,43 @@ export default function InventarioPage() {
         console.error("Error eliminando:", err);
         alert("No se pudo eliminar el producto.");
       });
+  }
+
+  // NUEVO → Abrir modal para pedidos
+  function abrirPedido(producto) {
+    setProductoPedido(producto);
+  }
+
+  // NUEVO → Guardar pedido (solo suma al inventario)
+  async function guardarPedido(pedido) {
+    try {
+      // CORREGIDO: Se agregaron las backticks (`)
+      const r = await fetch(`${API}/api/pedidos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pedido),
+      });
+
+      if (!r.ok) throw new Error("Error registrando pedido");
+
+      // Actualizar inventario local → sumar cantidad
+      setProductos((prev) =>
+        prev.map((p) =>
+          p.id === pedido.productoId
+            ? {
+                ...p,
+                cantidad: Number(p.cantidad) + Number(pedido.cantidad),
+              }
+            : p
+        )
+      );
+
+      setProductoPedido(null);
+      alert("Pedido registrado con éxito 🚚📦");
+    } catch (err) {
+      console.error("Error pedido:", err);
+      alert("No se pudo registrar el pedido.");
+    }
   }
 
   return (
@@ -94,12 +154,20 @@ export default function InventarioPage() {
         productos={productos}
         onEditar={abrirEditar}
         onEliminar={eliminarProducto}
+        onPedido={abrirPedido}
       />
 
       <ModalEditar
         producto={productoEditar}
         onClose={() => setProductoEditar(null)}
         onSave={guardarCambios}
+      />
+
+      <ModalPedido
+        producto={productoPedido}
+        proveedores={proveedores}
+        onClose={() => setProductoPedido(null)}
+        onSave={guardarPedido}
       />
     </div>
   );
